@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Catch</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="The Catch">
+<meta name="theme-color" content="#0d2526">
+<style>
+:root{--bg:#0d2526;--panel:#143537;--ink:#e6efe9;--mute:#8fb0a8;--brass:#d9a441;--line:#24494b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+main{max-width:640px;margin:0 auto;padding:16px}
+.ic{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+h1{font:700 28px Georgia,serif;margin:8px 0 2px;display:flex;align-items:center;gap:10px}
+h1 .ic{color:var(--brass);width:1.1em;height:1.1em}
+.sub{color:var(--mute);margin:0 0 16px}
+nav{display:flex;gap:8px;margin-bottom:16px}
+nav button{flex:1;padding:8px 4px;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;font:inherit;font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+nav button.on{background:var(--brass);color:#1a1405;border-color:var(--brass);font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+form{display:grid;gap:12px}
+label{display:grid;gap:4px;color:var(--mute);font-size:14px}
+.lb{display:flex;align-items:center;gap:6px}
+input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.go{padding:12px;border:0;border-radius:8px;background:var(--brass);color:#1a1405;font:600 16px system-ui;display:flex;align-items:center;justify-content:center;gap:8px}
+.fish{background:var(--panel);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.fish img{display:block;width:100%;max-height:420px;object-fit:cover}
+.body{padding:14px 16px;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:center}
+.len{font:700 44px/1 Georgia,serif;color:var(--brass);grid-row:span 2}
+.len small{font-size:20px}
+.t{display:flex;align-items:center;gap:8px;font-weight:600}
+.m{display:flex;align-items:center;gap:8px;color:var(--mute);font-size:14px}
+.m.note{color:var(--ink);align-items:flex-start;font-size:15px}
+.m.note .ic{margin-top:3px}
+.det{grid-column:1/-1;display:grid;gap:6px;margin-top:8px}
+.del{grid-column:1/-1;justify-self:end;display:flex;align-items:center;gap:6px;background:none;border:0;color:var(--mute);font:inherit;font-size:13px;padding:4px 0}
+.empty{color:var(--mute);text-align:center;padding:32px 0}
+.empty .ic{width:48px;height:48px;color:var(--brass);display:block;margin:0 auto 8px}
+.tools{text-align:center;margin:24px 0}
+.tools button{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid var(--line);color:var(--mute);padding:8px 14px;border-radius:8px;font:inherit}
+.pvw{overflow-x:auto;margin:12px 0}.pv{border-collapse:collapse;font-size:13px;white-space:nowrap}.pv th,.pv td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left}.bad{color:#ff9d8a}
+details{margin:4px 0 12px}summary{color:var(--mute);cursor:pointer;margin-bottom:8px}
+.ic.wide{width:2.6em;height:1.05em}.empty .ic.wide{width:130px;height:53px}
+.bar{display:grid;gap:12px;margin-bottom:16px}
+.gh{display:flex;align-items:center;gap:10px;width:100%;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 12px;margin:4px 0 12px;font:inherit;text-align:left}
+.gh .n{font-weight:600;flex:1}.gh .s{color:var(--mute);font-size:13px}.gh .ic{color:var(--brass)}
+.gh .chev{color:var(--mute);transition:transform .15s}.grp.shut .chev{transform:rotate(-90deg)}.grp{margin-bottom:8px}
+.sec{background:var(--panel);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.sec h2{font:700 18px Georgia,serif;margin:0 0 10px;display:flex;align-items:center;gap:8px}.sec h2 .ic{color:var(--brass)}
+.sec .row{margin-bottom:10px}.sec select{background:var(--bg)}
+.ibar{display:grid;grid-template-columns:34% 1fr auto;gap:8px;align-items:center;margin:8px 0;font-size:14px}
+.bt{height:10px;background:var(--bg);border-radius:5px;overflow:hidden}.bf{height:100%;background:var(--brass);border-radius:5px}
+.iv{font-size:13px;color:var(--mute);text-align:right;white-space:nowrap}.sm{color:var(--mute);font-size:13px}
+.tools button{margin:4px}
+[hidden]{display:none}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-fish" viewBox="0 0 60 24.3"><path fill="currentColor" fill-rule="evenodd" stroke="none" d="M59.9 5.3 59.5 4.9 58.1 4.9 57.6 4.0 57.1 4.0 56.9 4.7 56.5 4.4 56.5 4.0 56.0 4.0 55.7 4.3 55.7 5.0 55.4 5.3 52.8 5.3 52.7 5.2 52.7 4.3 53.0 4.0 53.3 4.0 53.5 4.2 54.2 4.1 54.2 3.5 54.0 3.3 54.0 3.0 54.2 2.9 54.2 2.6 54.6 2.2 54.6 1.8 54.8 1.6 54.8 0.9 54.6 0.7 54.6 0.5 54.4 0.2 54.1 0.2 54.0 0.0 51.9 0.0 51.8 0.2 51.5 0.2 51.0 0.6 50.5 0.6 50.3 0.9 49.8 0.9 49.7 1.1 49.0 1.1 48.8 1.3 48.1 1.3 48.0 1.5 47.1 1.5 46.9 1.7 45.8 1.7 45.6 1.9 43.5 1.9 43.3 2.1 41.5 2.1 41.4 2.3 40.5 2.3 40.3 2.6 39.6 2.6 39.5 2.8 39.0 2.8 38.8 3.0 38.4 3.0 38.2 3.2 37.7 3.2 37.6 3.4 37.1 3.4 36.9 3.6 36.4 3.6 36.3 3.8 35.8 3.8 35.6 4.0 35.2 4.0 35.0 4.3 34.5 4.3 34.4 4.5 33.9 4.5 33.7 4.7 33.2 4.7 33.1 4.9 32.6 4.9 32.4 5.1 31.8 5.1 31.6 5.3 31.1 5.3 31.0 5.5 30.5 5.5 30.3 5.7 29.6 5.7 29.5 6.0 29.0 6.0 28.8 6.2 28.1 6.2 28.0 6.4 27.3 6.4 27.1 6.6 26.4 6.6 26.3 6.8 25.6 6.8 25.4 7.0 24.7 7.0 24.6 7.2 23.9 7.2 23.7 7.4 23.0 7.4 22.9 7.7 22.2 7.7 22.0 7.9 21.1 7.9 21.0 8.1 20.3 8.1 20.1 8.3 19.2 8.3 19.0 8.5 17.9 8.5 17.8 8.7 17.1 8.7 16.9 8.9 16.2 8.9 16.1 9.1 15.2 9.1 15.0 8.9 14.1 8.9 13.9 8.7 11.1 8.7 11.0 8.9 10.5 8.9 10.3 9.1 9.8 9.1 9.7 9.4 9.4 9.4 9.0 9.8 8.8 9.8 8.1 10.5 8.1 10.7 7.7 11.1 7.7 11.6 7.4 11.8 7.4 12.2 7.3 12.3 7.1 12.1 6.4 12.1 6.3 11.9 5.8 11.9 5.6 11.7 5.2 11.7 5.0 11.5 4.5 11.5 4.4 11.3 3.7 11.3 3.5 11.1 2.8 11.1 2.7 10.9 2.2 10.9 2.0 11.1 1.3 11.1 1.2 11.3 0.9 11.3 0.0 12.1 0.0 14.2 0.2 14.3 0.2 14.6 0.4 14.7 0.6 15.4 1.1 15.8 1.1 16.1 2.0 17.0 2.2 17.0 2.3 17.3 2.6 17.5 2.6 18.4 1.9 19.0 1.9 19.3 1.5 19.8 1.5 20.7 1.7 20.9 1.7 21.4 2.2 22.1 3.7 22.1 3.9 21.9 4.8 21.9 4.9 21.6 5.6 21.6 5.8 21.4 6.3 21.4 6.4 21.2 6.9 21.2 7.1 21.0 7.6 21.0 7.7 20.8 8.2 20.8 8.4 20.6 8.8 20.6 9.0 20.4 9.5 20.4 9.6 20.7 10.1 21.2 10.3 21.2 10.7 21.6 11.0 21.6 11.1 21.9 13.9 21.9 14.1 21.6 14.3 22.0 14.0 22.2 14.0 23.5 14.5 24.0 15.0 24.0 15.1 24.2 18.0 24.2 18.1 24.0 18.4 24.0 18.6 23.8 19.3 23.6 19.6 23.1 20.5 24.0 21.8 24.0 22.0 23.8 22.2 23.8 22.6 23.4 22.9 23.4 24.2 22.0 24.2 21.8 24.4 21.6 24.4 21.3 24.6 21.2 24.7 20.8 25.4 20.8 25.6 20.6 26.7 20.6 26.9 20.4 28.2 20.4 28.4 20.2 29.7 20.2 29.8 19.9 30.5 19.9 30.6 20.1 30.2 20.5 30.2 21.0 30.0 21.1 30.0 23.1 30.3 23.4 30.7 23.4 30.9 23.6 33.1 23.6 33.2 23.4 33.7 23.4 33.9 23.1 34.6 22.9 35.8 21.6 36.2 22.1 36.5 22.1 36.6 22.3 37.1 22.3 37.3 22.5 38.0 22.5 38.1 22.3 38.6 22.3 39.5 21.4 39.5 21.1 39.7 21.0 39.7 20.7 40.2 20.1 40.2 19.6 40.4 19.5 40.4 19.0 40.8 18.4 40.8 17.5 41.0 17.3 41.0 16.9 40.8 16.7 40.9 16.5 41.4 16.5 41.5 16.3 42.9 16.3 43.0 16.1 43.7 16.1 43.9 15.9 44.4 15.9 44.5 15.7 45.2 15.7 45.4 15.5 45.9 15.5 46.0 15.3 46.3 15.3 46.4 15.1 46.7 15.1 46.9 14.8 47.1 14.8 47.3 14.6 47.6 14.6 47.7 14.4 48.4 14.2 48.8 13.8 49.0 13.8 49.4 13.4 49.7 13.4 50.1 12.9 50.3 12.9 50.9 12.5 51.4 12.5 51.5 12.3 53.1 12.3 53.2 12.1 53.9 12.1 54.1 11.9 54.6 11.9 55.2 11.4 55.6 11.4 55.8 11.2 56.1 11.2 56.4 10.8 56.7 10.8 57.1 10.4 57.3 10.4 59.5 8.2 59.7 7.5 59.9 7.4ZM20.8 22.2 20.8 21.1 20.9 21.0 22.7 21.0 22.8 21.1 21.8 22.1 21.5 22.1 21.4 22.3 20.9 22.3ZM19.5 21.1 19.7 21.0 19.8 21.2 19.6 21.3ZM18.3 20.7 18.2 20.9 17.9 20.9 17.6 21.3 17.3 21.3 16.6 21.8 16.6 22.4 16.9 22.5 17.0 22.6 16.9 22.8 16.2 22.8 16.1 23.0 15.6 23.0 15.5 22.9 15.5 22.6 15.7 22.4 15.7 22.2 16.1 21.8 16.1 21.5 16.5 21.4 17.3 20.6 18.2 20.6ZM11.2 19.6 11.3 19.5 11.8 19.5 12.0 19.7 12.9 19.7 13.0 19.9 13.9 19.9 14.0 20.1 13.5 20.2 13.3 20.4 11.8 20.4 11.6 20.2 11.2 20.1ZM34.4 19.1 34.5 19.3 34.0 19.6 34.0 19.9 33.3 20.6 33.0 20.6 32.8 20.9 32.8 21.4 33.5 21.4 33.6 21.6 33.1 21.9 32.8 21.9 32.7 22.1 32.0 22.1 31.8 22.3 31.3 22.3 31.2 22.2 31.4 22.0 31.4 21.8 31.6 21.6 31.9 20.9 32.2 20.6 32.4 20.6 32.8 20.2 33.1 20.2 33.5 19.7 33.7 19.7 34.3 19.1ZM7.4 18.1 7.6 18.0 7.7 18.2 7.4 18.3ZM38.0 17.8 38.1 17.9 38.1 18.6 37.9 18.8 37.9 19.5 37.7 19.6 37.7 20.7 37.3 20.9 37.2 20.5 37.0 20.3 37.0 19.8 36.8 19.7 36.8 19.2 37.0 19.0 37.0 18.8 37.2 18.6 37.5 17.8ZM39.1 17.4 39.3 17.4 39.4 17.6 39.1 17.7ZM12.1 15.3 12.3 15.3 12.3 15.5 12.1 15.5ZM7.0 15.3 7.2 15.3 7.2 15.5 7.0 15.5ZM13.6 14.9 13.8 14.8 13.8 15.1 13.6 15.1ZM42.6 14.7 42.4 14.9 42.0 14.9 41.8 15.1 40.7 15.1 40.5 15.3 40.1 15.3 39.9 15.5 38.7 15.2 38.8 15.1 40.1 15.1 40.7 14.4 41.2 14.4 41.3 14.6 42.4 14.6ZM6.1 13.8 6.3 13.8 6.4 14.0 7.3 14.0 7.6 14.2 8.2 14.2 8.3 14.4 8.2 14.5 7.3 14.5 7.1 14.7 6.9 14.7 6.1 14.0ZM43.1 13.7 43.4 13.5 43.6 13.7 43.4 13.9ZM44.0 13.5 44.3 13.3 44.5 13.5 44.2 13.7ZM30.8 13.7 31.0 13.5 31.1 13.1 31.6 13.1 32.0 13.6 32.2 13.6 32.4 13.8 32.9 13.8 33.0 14.0 33.9 14.0 34.1 14.6 36.3 14.6 36.4 15.3 37.1 15.3 37.2 15.4 37.1 15.5 35.8 15.5 35.6 15.3 34.7 15.3 34.6 15.1 33.5 15.1 33.3 14.9 32.8 14.9 32.7 14.7 32.2 14.7 32.0 14.5 31.8 14.5 31.4 14.0 31.1 14.0ZM47.0 13.0 47.2 12.9 47.2 13.1 47.0 13.2ZM2.2 12.5 3.1 12.5 3.2 12.6 3.1 12.8 2.4 12.8 2.2 13.0 1.9 13.0 1.9 13.5 2.2 13.8 3.1 13.8 3.2 14.0 3.5 14.0 4.1 14.4 4.6 14.4 4.7 14.6 5.0 14.6 5.2 14.8 5.4 14.8 5.6 15.1 6.3 15.3 6.6 15.6 6.6 17.1 6.8 17.3 6.7 17.4 6.2 17.4 6.0 17.7 6.0 18.2 7.1 18.2 7.2 18.4 6.7 18.7 6.4 18.7 6.3 18.9 6.0 18.9 5.9 19.1 5.6 19.1 5.4 19.4 4.9 19.4 4.8 19.6 4.5 19.6 4.5 20.1 5.0 20.2 5.1 20.3 5.0 20.4 4.5 20.4 4.4 20.6 3.5 20.6 3.4 20.5 3.4 20.3 4.0 19.7 4.0 19.2 4.2 19.0 4.2 17.3 4.0 17.1 3.8 16.4 3.1 15.9 3.1 15.6 2.5 15.0 2.5 14.7 1.4 13.7 1.6 13.0ZM34.9 16.5 34.5 16.6 34.3 16.9 34.1 17.2 33.7 17.2 33.5 17.4 33.0 17.4 32.9 17.7 32.2 17.7 32.0 17.9 31.3 17.9 31.2 18.1 30.3 18.1 30.1 18.3 29.4 18.3 29.3 18.5 28.4 18.5 28.2 18.7 27.1 18.7 26.9 18.9 26.0 18.9 25.9 19.1 23.9 19.1 23.7 19.4 19.6 19.4 19.5 19.1 17.9 19.1 17.8 18.9 16.4 18.9 16.3 18.7 14.5 18.7 14.4 18.5 13.0 18.5 12.9 18.3 12.0 18.3 11.8 18.1 10.9 18.1 10.7 17.9 10.3 17.9 10.1 17.7 9.8 17.7 9.7 17.4 9.0 17.2 7.6 15.8 7.7 15.7 8.6 15.7 8.8 15.5 9.0 15.5 9.1 15.6 9.1 16.3 10.1 17.2 10.7 17.2 10.8 16.6 10.4 16.1 10.4 15.4 10.7 15.3 10.9 15.4 10.9 15.9 11.3 16.2 11.3 16.5 11.5 16.8 11.8 16.8 12.2 17.2 12.7 17.1 12.7 16.6 12.3 16.1 12.3 15.8 12.4 15.7 13.7 17.0 13.9 17.0 14.5 17.4 15.0 17.4 15.1 16.9 14.2 16.1 14.2 15.8 13.8 15.5 13.8 15.3 14.0 15.3 14.9 16.3 15.4 16.3 15.5 15.4 15.3 15.2 15.3 14.9 15.1 14.7 15.4 14.6 15.6 14.4 15.9 14.4 16.0 14.5 16.0 15.0 16.2 15.2 16.4 15.9 17.5 17.0 18.0 17.0 18.0 16.4 17.8 16.3 17.8 15.8 17.6 15.6 17.6 15.2 17.3 14.8 17.6 14.6 17.7 15.0 19.0 16.3 19.5 16.3 19.5 15.6 19.3 15.4 19.3 15.2 19.1 15.0 19.1 14.7 18.7 14.1 18.7 13.9 19.0 13.8 19.1 14.1 19.4 14.3 19.4 14.6 19.6 14.7 19.6 15.0 20.4 15.8 20.4 16.1 20.9 16.5 21.4 16.5 21.4 15.8 21.2 15.6 21.2 15.4 21.0 15.2 21.0 14.7 20.8 14.6 20.8 14.3 20.4 13.7 20.5 13.6 21.0 13.6 21.2 13.4 21.3 13.5 21.3 14.1 21.5 14.3 21.5 14.8 21.7 14.9 21.9 15.6 23.0 16.8 23.3 16.8 23.9 17.4 24.6 17.4 24.6 16.9 23.8 16.1 23.8 15.8 23.4 15.4 23.4 15.2 23.1 15.0 23.1 14.7 22.9 14.6 22.9 14.4 22.5 13.7 22.5 13.5 22.3 13.2 22.7 13.1 23.0 13.5 23.0 13.9 23.2 14.1 23.2 14.6 23.4 14.7 23.4 15.0 24.3 15.9 24.8 15.9 24.8 14.3 24.6 14.1 24.6 13.9 24.4 13.7 24.4 13.5 24.0 12.9 24.1 12.7 24.8 12.7 24.9 12.8 24.9 13.5 25.1 13.7 25.1 14.1 25.7 14.7 25.7 15.0 26.4 15.7 26.7 15.7 26.9 15.9 27.3 15.9 27.4 15.4 26.8 14.8 26.8 14.5 26.3 13.9 26.3 13.0 26.1 12.9 26.1 12.4 26.2 12.3 26.7 12.3 26.9 12.1 27.0 12.2 27.0 12.9 27.2 13.0 27.2 13.5 27.4 13.7 27.4 14.1 27.7 14.3 27.7 14.6 28.1 14.9 28.1 15.2 28.6 15.7 29.0 15.7 29.1 14.9 28.9 14.8 28.9 14.3 28.7 14.1 28.7 13.2 28.5 13.1 28.5 12.4 28.2 12.2 28.2 12.0 28.4 11.9 29.5 11.9 29.8 12.2 29.8 13.9 30.0 14.1 30.0 14.6 30.5 15.1 30.7 15.1 30.9 15.3 31.4 15.3 31.5 15.5 32.0 15.5 32.2 15.7 32.7 15.7 32.8 15.9 33.5 15.9 33.7 16.1 34.4 16.1ZM15.5 11.3 15.7 11.2 15.7 11.4 15.5 11.5ZM9.1 12.9 9.1 12.0 9.3 11.8 9.3 11.5 9.8 11.0 10.1 11.0 10.3 10.8 10.5 10.8 10.7 11.2 11.2 11.2 11.3 11.4 12.2 11.4 12.4 11.6 12.8 11.8 12.7 11.9 12.4 11.9 12.0 12.3 11.8 12.3 11.2 12.8 10.7 12.8 10.1 13.2 9.6 13.2 9.5 13.0ZM13.1 10.5 13.2 10.4 14.6 10.4 14.7 10.5 14.3 10.7 13.9 11.1 13.6 10.7 13.2 10.6ZM33.8 8.5 34.0 8.5 34.0 8.7 33.8 8.7ZM35.6 7.6 35.7 7.8 35.5 7.9 35.5 8.2 35.2 8.3 35.1 7.9 35.4 7.6ZM35.9 7.4 36.1 7.4 36.2 7.6 36.0 7.7ZM43.6 3.7 43.5 3.8 42.9 3.8 42.7 4.0 41.8 4.0 41.6 4.3 40.7 4.3 40.5 4.5 39.7 4.5 39.5 4.7 39.0 4.7 38.4 5.1 37.9 5.1 37.3 5.5 36.6 5.5 36.1 6.0 35.6 6.0 35.4 6.2 34.9 6.2 34.8 6.4 34.3 6.4 33.7 6.8 33.0 6.8 32.9 7.0 32.4 7.0 32.2 7.2 31.8 7.2 31.6 7.4 31.1 7.4 31.0 7.7 30.3 7.7 30.1 7.9 29.6 7.9 29.5 8.1 29.0 8.1 28.8 8.3 28.1 8.3 28.0 8.5 27.5 8.5 27.3 8.7 26.6 8.7 26.5 8.9 25.8 8.9 25.6 9.1 24.9 9.1 24.8 9.4 24.3 9.4 24.1 9.6 23.5 9.6 23.3 9.8 22.6 9.8 22.4 10.0 21.8 10.0 21.6 10.2 20.7 10.2 20.5 10.4 19.0 10.4 18.8 10.6 18.1 10.6 18.0 10.9 17.1 10.9 16.9 11.1 16.4 11.1 16.2 11.3 15.9 11.2 16.4 10.8 16.9 10.8 17.1 10.6 17.8 10.4 18.4 9.7 19.3 9.7 19.4 9.5 20.5 9.5 20.7 9.3 21.6 9.3 21.8 9.1 22.7 9.1 22.8 8.9 23.9 8.9 24.1 8.7 24.8 8.7 24.9 8.5 25.9 8.5 26.0 8.2 26.9 8.2 27.1 8.0 27.8 8.0 27.9 7.8 28.4 7.8 28.6 7.6 29.0 7.6 29.2 7.4 29.7 7.4 30.3 7.0 30.7 7.0 30.9 6.8 31.2 6.8 31.8 6.3 32.2 6.3 32.4 6.1 32.9 6.1 33.0 5.9 33.5 5.9 33.7 5.7 34.1 5.7 34.3 5.5 34.8 5.5 34.9 5.3 35.6 5.3 36.2 4.8 37.1 4.8 37.3 4.6 38.0 4.6 38.1 4.4 38.6 4.4 38.8 4.2 39.8 4.2 40.1 4.0 41.1 4.0 41.3 3.8 42.4 3.8 42.6 3.6 43.5 3.6ZM44.4 3.5 44.7 3.3 44.9 3.5 44.6 3.7ZM46.1 3.2 46.3 3.1 46.4 3.4 46.2 3.4ZM47.2 3.0 47.4 2.9 47.4 3.1 47.2 3.2ZM58.7 6.4 58.7 6.5 58.5 6.6 58.5 6.9 57.9 7.5 57.9 7.8 56.7 8.9 56.4 8.9 56.1 9.4 55.8 9.4 55.6 9.6 55.4 9.6 54.8 10.0 54.3 10.0 54.1 10.2 53.5 10.2 53.3 10.4 52.0 10.4 51.8 10.6 51.5 10.6 51.4 10.9 50.7 11.1 50.3 11.5 50.1 11.5 49.9 11.7 49.2 11.7 49.0 11.9 45.2 11.9 45.0 12.1 44.3 12.1 44.1 12.3 43.7 12.3 43.5 12.6 43.2 12.6 42.7 13.0 42.2 13.0 42.0 13.2 41.3 13.2 41.2 13.4 39.4 13.4 39.3 13.2 37.3 13.2 37.2 13.4 37.0 13.4 37.0 13.2 37.2 13.1 37.1 12.6 36.6 12.6 36.5 12.8 35.8 12.8 35.6 13.0 33.9 13.0 33.7 12.8 33.0 12.8 32.9 12.6 32.4 12.6 31.9 12.2 32.0 11.9 32.2 12.1 34.6 12.1 34.6 11.5 34.8 11.4 35.4 12.1 35.6 12.1 36.0 12.4 36.5 12.5 36.5 11.5 36.3 11.3 37.0 11.2 37.0 10.5 36.8 10.3 36.8 10.1 36.5 9.8 36.6 9.7 37.3 9.7 37.5 9.5 38.0 9.5 38.1 9.3 38.4 9.3 38.7 9.0 38.7 8.1 38.8 8.0 39.5 8.0 40.2 7.6 40.2 7.1 40.4 6.9 40.4 6.2 40.2 6.0 40.7 5.5 41.4 5.3 41.7 5.6 41.8 6.1 42.7 6.1 42.8 5.9 43.1 5.9 43.2 5.7 43.5 5.7 44.1 5.3 44.8 5.3 44.9 5.1 45.4 5.1 46.2 4.4 46.9 4.4 47.0 4.5 46.9 4.7 46.2 4.9 46.1 5.1 45.8 5.1 45.2 5.5 44.9 5.5 44.8 5.7 44.3 5.7 44.1 6.0 43.5 6.2 42.1 7.5 42.1 8.0 41.7 8.4 41.7 9.3 42.2 9.3 42.3 9.0 43.7 7.6 43.9 7.6 44.3 7.2 44.6 7.2 45.2 6.8 45.6 6.8 45.8 6.5 46.1 6.5 46.2 6.3 46.9 6.1 47.3 5.7 47.6 5.7 47.7 5.5 48.4 5.3 48.8 4.8 49.0 4.8 49.4 4.4 49.7 4.4 50.2 3.9 50.2 2.6 50.5 2.3 51.2 2.3 51.3 2.1 51.8 2.1 52.0 1.9 52.2 1.9 52.6 1.4 53.1 1.4 53.2 1.6 51.6 3.2 51.3 3.2 50.5 4.0 50.3 4.0 49.7 4.7 49.4 4.7 48.8 5.3 48.6 5.3 45.4 8.5 45.2 8.5 44.8 8.9 44.5 8.9 44.1 9.4 43.5 9.6 43.2 9.8 43.2 10.3 44.4 10.4 44.5 10.2 44.8 10.2 46.0 8.9 46.3 8.9 47.5 7.6 47.8 7.6 48.4 7.0 48.6 7.0 49.2 6.3 49.5 6.3 49.6 6.1 50.3 6.1 50.5 6.3 52.0 6.3 52.2 6.5 55.4 6.5 55.5 6.7 55.0 7.0 54.7 7.0 54.6 7.2 54.1 7.2 53.9 7.4 53.5 7.4 53.1 7.0 52.4 7.0 52.2 7.9 52.0 7.9 51.6 7.6 51.6 7.3 51.4 7.1 51.4 6.8 50.9 6.8 50.9 7.3 50.6 7.5 50.6 8.0 50.5 8.1 50.4 8.0 50.4 7.5 50.2 7.3 50.2 7.1 49.6 7.0 49.4 7.3 49.4 8.0 49.3 8.1 47.5 8.1 47.5 8.7 48.0 8.7 48.1 8.9 52.7 8.9 52.8 8.7 53.3 8.7 53.5 8.5 54.1 8.5 54.3 8.2 55.0 8.2 55.2 8.0 55.6 8.0 56.2 7.6 56.7 7.6 57.1 7.2 57.3 7.2 57.6 6.9 57.7 6.5 58.4 6.5 58.5 6.3Z"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-ruler" viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="8" rx="1"/><path d="M7 8v3M11 8v2M15 8v3M19 8v2"/></symbol>
+<symbol id="i-lake" viewBox="0 0 24 24"><path d="M2 8c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></symbol>
+<symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></symbol>
+<symbol id="i-hook" viewBox="0 0 24 24"><path d="M15 3v11a5 5 0 0 1-10 0M13 3h4M3 12l2 2.5 2-2.5"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+<symbol id="i-cloudsun" viewBox="0 0 24 24"><circle cx="8" cy="8" r="2.5"/><path d="M8 2v1.5M2 8h1.5M3.8 3.8l1 1M12.2 3.8l-1 1M9 20a3.5 3.5 0 0 1-.4-7A5 5 0 0 1 18 13.5 3.25 3.25 0 0 1 17.5 20z"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9.5 4.25 4.25 0 0 1 17.5 18z"/></symbol>
+<symbol id="i-rain" viewBox="0 0 24 24"><path d="M7 16a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 7.5 4.25 4.25 0 0 1 17.5 16zM8 19v2M12 19v2M16 19v2"/></symbol>
+<symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="i-note" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M4 21h16"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+<symbol id="i-sort" viewBox="0 0 24 24"><path d="M7 4v16M7 4L4 7M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></symbol>
+<symbol id="i-group" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14a8 8 0 1 1-10-10 6 6 0 0 0 10 10z"/></symbol>
+</defs></svg>
+<main>
+<h1><svg class="ic wide"><use href="#i-fish"/></svg>The Catch</h1><p class="sub" id="count"></p>
+<nav><button id="tl" class="on"><svg class="ic wide"><use href="#i-fish"/></svg>Catches</button><button id="ta"><svg class="ic"><use href="#i-plus"/></svg>Add</button><button id="tx"><svg class="ic"><use href="#i-chart"/></svg>Insights</button><button id="ti"><svg class="ic"><use href="#i-upload"/></svg>Import</button></nav>
+
+<section id="log">
+<div class="bar">
+<label><span class="lb"><svg class="ic"><use href="#i-search"/></svg>Search</span><input id="q" type="search" placeholder="Lure, lake, notes, anything"></label>
+<div class="row"><label><span class="lb"><svg class="ic"><use href="#i-sort"/></svg>Sort</span><select id="sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="long">Longest first</option><option value="short">Shortest first</option></select></label>
+<label><span class="lb"><svg class="ic"><use href="#i-group"/></svg>Group by</span><select id="group"><option value="none">No grouping</option><option value="day">Day (trip)</option><option value="month">Month</option><option value="year">Year</option><option value="lake">Lake</option><option value="species">Species</option><option value="angler">Angler</option><option value="lure">Lure</option><option value="luremix">Lure and color</option><option value="color">Lure color</option><option value="weather">Weather</option></select></label></div>
+</div>
+<div id="list"></div>
+<div class="tools"><button id="exp"><svg class="ic"><use href="#i-download"/></svg>Save a backup file</button><button id="rst"><svg class="ic"><use href="#i-upload"/></svg>Restore or merge a backup</button></div></section>
+
+<section id="add" hidden><form id="f">
+<label><span class="lb"><svg class="ic"><use href="#i-camera"/></svg>Photo</span><input type="file" id="photo" accept="image/*"></label>
+<div class="row"><label><span class="lb"><svg class="ic"><use href="#i-calendar"/></svg>Date</span><input type="date" name="date" required></label>
+<label><span class="lb"><svg class="ic"><use href="#i-clock"/></svg>Time</span><input type="time" name="time"></label></div>
+<div class="row"><label><span class="lb"><svg class="ic"><use href="#i-ruler"/></svg>Length (inches)</span><input type="number" name="length" step="any" min="0" inputmode="decimal" required></label>
+<label><span class="lb"><svg class="ic wide"><use href="#i-fish"/></svg>Species</span><input name="species" list="d-species"></label></div>
+<div class="row"><label><span class="lb"><svg class="ic"><use href="#i-lake"/></svg>Lake</span><input name="lake" list="d-lake" required></label>
+<label><span class="lb"><svg class="ic"><use href="#i-person"/></svg>Angler</span><input name="angler" list="d-angler"></label></div>
+<div class="row"><label><span class="lb"><svg class="ic"><use href="#i-hook"/></svg>Lure</span><input name="lure" list="d-lure"></label>
+<label><span class="lb"><svg class="ic"><use href="#i-cloudsun"/></svg>Weather</span><input name="weather" list="d-weather" placeholder="Choose or type"></label></div>
+<label><span class="lb"><svg class="ic"><use href="#i-hook"/></svg>Lure color or pattern</span><input name="pattern" list="d-pattern"></label>
+<label><span class="lb"><svg class="ic"><use href="#i-pin"/></svg>Location details</span><input name="spot"></label>
+<label><span class="lb"><svg class="ic"><use href="#i-note"/></svg>Notes</span><textarea name="notes" rows="3"></textarea></label>
+<button class="go"><svg class="ic"><use href="#i-plus"/></svg>Save catch</button>
+</form></section>
+<section id="ins" hidden>
+<div class="bar"><label><span class="lb"><svg class="ic wide"><use href="#i-fish"/></svg>Species</span><select id="xsp"></select></label></div>
+<div id="xout"></div></section>
+<section id="imp" hidden>
+<label><span class="lb"><svg class="ic"><use href="#i-note"/></svg>Paste your notes</span><textarea id="itext" rows="10"></textarea></label>
+<details open><summary>Matching rules (edit before previewing)</summary>
+<label>Angler codes (code = name)<textarea id="ianglers" rows="2">c = Connor
+d = Dad</textarea></label>
+<label>Lures (word in your notes = full name | color assumed if none noted)<textarea id="ilures" rows="5">suick = Suick Thriller | Firetiger
+medusa = Medusa
+headbanger = Headbanger
+blue dart = Drifter Hellhound</textarea></label>
+<label>Lure colors (separated by commas; abbreviation = full name)<textarea id="icolors" rows="2">perch, black/white, silver/black, firetiger, ft = firetiger</textarea></label>
+</details>
+<button class="go" id="iprev" type="button">Preview</button><div id="iout"></div>
+</section>
+<datalist id="d-pattern"></datalist><datalist id="d-weather"></datalist><datalist id="d-species"></datalist><datalist id="d-lake"></datalist><datalist id="d-angler"></datalist><datalist id="d-lure"></datalist>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(16).slice(2);
+let db;
+const open=indexedDB.open('muskielog',1);
+open.onupgradeneeded=()=>open.result.createObjectStore('catches',{keyPath:'id'});
+open.onsuccess=()=>{db=open.result;load();if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()};
+const store=m=>db.transaction('catches',m).objectStore('catches');
+const run=q=>new Promise(r=>{q.onsuccess=()=>r(q.result)});
+const all=()=>run(store('readonly').getAll());
+const put=c=>run(store('readwrite').put(c));
+const del=id=>run(store('readwrite').delete(id));
+
+function show(w){for(const k of ['log','add','ins','imp'])$('#'+k).hidden=w!==k;
+ for(const x of [['log','tl'],['add','ta'],['ins','tx'],['imp','ti']])$('#'+x[1]).classList.toggle('on',w===x[0]);
+ if(w==='ins')renderInsights()}
+$('#ti').onclick=()=>show('imp');$('#tx').onclick=()=>show('ins');$('#tl').onclick=()=>show('log');$('#ta').onclick=()=>show('add');
+
+function setDefaults(){const n=new Date();
+ $('#f').date.value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')}
+setDefaults();
+
+async function shrink(file){
+ const img=new Image();img.src=URL.createObjectURL(file);await img.decode();
+ const s=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight));
+ const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);
+ c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(img.src);
+ return new Promise(r=>c.toBlob(r,'image/jpeg',.82));
+}
+
+$('#f').onsubmit=async e=>{e.preventDefault();
+ const f=e.target,v=n=>f[n].value.trim(),file=$('#photo').files[0];
+ await put({id:uid(),created:Date.now(),date:v('date'),time:v('time'),length:parseFloat(v('length')),
+  species:v('species'),lake:v('lake'),angler:v('angler'),lure:v('lure'),pattern:v('pattern'),weather:v('weather'),
+  spot:v('spot'),notes:v('notes'),photo:file?await shrink(file):null});
+ f.reset();setDefaults();await load();show('log');
+};
+
+function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+const NS='http://www.w3.org/2000/svg';
+function ic(n){const s=document.createElementNS(NS,'svg'),u=document.createElementNS(NS,'use');
+ s.setAttribute('class','ic'+(n==='fish'?' wide':''));s.setAttribute('aria-hidden','true');u.setAttribute('href','#i-'+n);s.append(u);return s}
+function line(n,t,cls){const d=el('div','m'+(cls?' '+cls:''));d.append(ic(n),el('span','',t));return d}
+function wicon(w){w=w.toLowerCase();
+ return /dusk|dawn|night|evening|twilight/.test(w)?'moon':/snow|sleet/.test(w)?'snow':/rain|drizzle|shower/.test(w)?'rain':/partly/.test(w)?'cloudsun':/sunny|clear/.test(w)?'sun':'cloud'}
+
+let ALL=[];
+const VIEW=(()=>{let v={};try{v=JSON.parse(localStorage.getItem('muskie-view'))||{}}catch(e){}return{sort:v.sort||'new',group:v.group||'none',q:''}})();
+function saveView(){try{localStorage.setItem('muskie-view',JSON.stringify({sort:VIEW.sort,group:VIEW.group}))}catch(e){}}
+const SORTS={new:(a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')),
+ old:(a,b)=>SORTS.new(b,a),long:(a,b)=>b.length-a.length||SORTS.new(a,b),short:(a,b)=>a.length-b.length||SORTS.new(a,b)};
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const GROUPS={
+ day:{icon:'calendar',time:1,key:c=>c.date,label:k=>MONTHS[+k.slice(5,7)-1]+' '+(+k.slice(8,10))+', '+k.slice(0,4)},
+ month:{icon:'calendar',time:1,key:c=>(c.date||'').slice(0,7),label:k=>MONTHS[+k.slice(5,7)-1]+' '+k.slice(0,4)},
+ year:{icon:'calendar',time:1,key:c=>(c.date||'').slice(0,4)},
+ lake:{icon:'lake',key:c=>c.lake},species:{icon:'fish',key:c=>c.species},angler:{icon:'person',key:c=>c.angler},
+ lure:{icon:'hook',key:c=>c.lure},luremix:{icon:'hook',key:c=>c.lure&&(c.lure+(c.pattern?' ('+c.pattern+')':''))},
+ color:{icon:'hook',key:c=>c.pattern},weather:{icon:null,key:c=>c.weather}};
+const t12=t=>{const p=t.split(':'),h=+p[0];return ((h%12)||12)+':'+p[1]+' '+(h<12?'AM':'PM')};
+
+function card(c){
+ const card=el('article','fish');
+ if(c.photo){const i=el('img');i.src=URL.createObjectURL(c.photo);i.alt='Photo of the catch';card.append(i)}
+ const b=el('div','body');
+ const len=el('div','len',String(c.length));len.append(el('small','','″'));
+ const t=el('div','t');t.append(ic('fish'),el('span','',c.species||'Fish'));
+ b.append(len,t,c.lake?line('lake',c.lake):el('div'));
+ const det=el('div','det');
+ const when=line('calendar',c.date);
+ if(c.time)when.append(ic('clock'),el('span','',t12(c.time)));
+ det.append(when);
+ if(c.angler)det.append(line('person',c.angler));
+ if(c.lure)det.append(line('hook',c.lure+(c.pattern?' ('+c.pattern+(c.patternAssumed?', assumed':'')+')':'')));
+ if(c.weather)det.append(line(wicon(c.weather),c.weather));
+ if(c.spot)det.append(line('pin',c.spot));
+ if(c.notes)det.append(line('note',c.notes,'note'));
+ const d=el('button','del');d.append(ic('trash'),el('span','','Delete'));
+ d.onclick=async()=>{if(confirm('Delete this catch? This cannot be undone.')){await del(c.id);load()}};
+ b.append(det);
+ if(!c.photo){const inp=el('input');inp.type='file';inp.accept='image/*';inp.hidden=true;
+  const ab=el('button','del');ab.append(ic('camera'),el('span','','Add photo'));ab.onclick=()=>inp.click();
+  inp.onchange=async()=>{if(inp.files[0]){c.photo=await shrink(inp.files[0]);await put(c);load()}};b.append(ab,inp)}
+ b.append(d);card.append(b);return card;
+}
+
+function renderList(){
+ const q=VIEW.q.trim().toLowerCase(),n=ALL.length;
+ const rows=ALL.filter(c=>!q||[c.date,c.time,c.length,c.species,c.lake,c.angler,c.lure,c.pattern,c.weather,c.spot,c.notes].join(' ').toLowerCase().includes(q)).sort(SORTS[VIEW.sort]);
+ $('#count').textContent=q?rows.length+' of '+n+' catches match':(n===1?'1 catch logged':n+' catches logged');
+ const list=$('#list');list.replaceChildren();
+ if(!n){const e=el('p','empty');e.append(ic('fish'),'No catches yet. Tap "Add" to log your first.');list.append(e);return}
+ if(!rows.length){list.append(el('p','empty','No catches match your search.'));return}
+ const g=GROUPS[VIEW.group];
+ if(!g){rows.forEach(c=>list.append(card(c)));return}
+ const map=new Map();
+ for(const c of rows){const k=g.key(c)||'';if(!map.has(k))map.set(k,[]);map.get(k).push(c)}
+ const arr=[...map].map(([k,r])=>({k,r,label:k?(g.label?g.label(k):k):'Not recorded'}));
+ if(g.time)arr.sort((a,b)=>VIEW.sort==='old'?a.k.localeCompare(b.k):b.k.localeCompare(a.k));
+ else arr.sort((a,b)=>(!a.k-!b.k)||b.r.length-a.r.length||a.label.localeCompare(b.label));
+ for(const x of arr){
+  const lens=x.r.map(c=>c.length).filter(v=>v>0);
+  const avg=lens.length?Math.round(lens.reduce((a,b)=>a+b,0)/lens.length*10)/10:0;
+  const stats=x.r.length+(x.r.length===1?' catch':' catches')+(lens.length?' | avg '+avg+'″ | longest '+Math.max.apply(null,lens)+'″':'');
+  const wrap=el('div','grp'),h=el('button','gh'),body=el('div'),cv=ic('chev');cv.classList.add('chev');h.type='button';
+  h.append(ic(g.icon||(x.k?wicon(x.k):'cloud')),el('span','n',x.label),el('span','s',stats),cv);
+  h.onclick=()=>{body.hidden=wrap.classList.toggle('shut')};
+  x.r.forEach(c=>body.append(card(c)));wrap.append(h,body);list.append(wrap);
+ }
+}
+
+async function load(){
+ ALL=await all();
+ for(const k of ['species','lake','angler','lure','pattern','weather']){
+  const set=new Set(k==='weather'?['Sunny','Sunny (in shade)','Partly cloudy','Mostly cloudy','Overcast','Drizzle','Light rain','Rain','Sleet','Snow']:[]);
+  ALL.forEach(r=>{if(r[k])set.add(r[k])});
+  if(k==='species')['Muskellunge','Northern Pike','Walleye','Smallmouth Bass','Largemouth Bass'].forEach(s=>set.add(s));
+  $('#d-'+k).replaceChildren(...(k==='weather'?[...set]:[...set].sort()).map(v=>{const o=document.createElement('option');o.value=v;return o}));
+ }
+ renderList();
+}
+$('#sort').value=VIEW.sort;$('#group').value=VIEW.group;
+$('#sort').onchange=e=>{VIEW.sort=e.target.value;saveView();renderList()};
+$('#group').onchange=e=>{VIEW.group=e.target.value;saveView();renderList()};
+$('#q').oninput=e=>{VIEW.q=e.target.value;renderList()};
+
+const read=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)});
+$('#exp').onclick=async()=>{
+ const rows=await all();for(const c of rows)if(c.photo)c.photo=await read(c.photo);
+ const name='the-catch-backup-'+new Date().toISOString().slice(0,10)+'.json',blob=new Blob([JSON.stringify(rows)],{type:'application/json'});
+ try{const f=new File([blob],name,{type:'application/json'});
+  if(matchMedia('(pointer:coarse)').matches&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}
+ }catch(e){if(e&&e.name==='AbortError')return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
+};
+function dataToBlob(u){const p=u.split(','),mime=(p[0].match(/:(.*?);/)||[0,'image/jpeg'])[1],b=atob(p[1]),a=new Uint8Array(b.length);
+ for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:mime})}
+function mergePlan(cur,data){
+ const byId=new Map(cur.map(c=>[c.id,c])),byKey=new Map(cur.map(c=>[key(c),c])),save=[];let added=0,photos=0,skipped=0;
+ for(const r of data){
+  if(!r||!r.date||!(r.length>0))continue;
+  const photo=typeof r.photo==='string'&&r.photo.indexOf('data:')===0?dataToBlob(r.photo):null;
+  const ex=byId.get(r.id)||byKey.get(key(r));
+  if(ex){if(!ex.photo&&photo){ex.photo=photo;save.push(ex);photos++}else skipped++;continue}
+  const c=Object.assign({},r,{photo:photo,id:r.id||uid()});save.push(c);byId.set(c.id,c);byKey.set(key(c),c);added++}
+ return{save,added,photos,skipped}}
+const rfile=document.createElement('input');rfile.type='file';rfile.accept='.json,application/json';
+$('#rst').onclick=()=>rfile.click();
+rfile.onchange=async()=>{
+ const f=rfile.files[0];if(!f)return;let data;
+ try{data=JSON.parse(await f.text());if(!Array.isArray(data))throw 0}catch(e){alert('That file could not be read as a The Catch backup.');rfile.value='';return}
+ rfile.value='';const plan=mergePlan(await all(),data);
+ for(const c of plan.save)await put(c);
+ await load();alert('Added '+plan.added+' new catches, attached photos to '+plan.photos+' existing ones, and skipped '+plan.skipped+' that were already here.');
+};
+const WEATHER=[['sunny (in shade)','Sunny (in shade)'],['sunny/shade','Sunny (in shade)'],['sunny','Sunny'],['partly cloudy','Partly cloudy'],['mostly cloudy','Mostly cloudy'],['overcast','Overcast'],['light rain','Light rain'],['light drizzle','Drizzle'],['drizzle','Drizzle'],['rain','Rain'],['sleet','Sleet'],['snow','Snow']];
+const SPECIES={muskie:'Muskellunge',musky:'Muskellunge',muskellunge:'Muskellunge',pike:'Northern Pike',lmb:'Largemouth Bass',walleye:'Walleye',bass:'Bass',smallmouth:'Smallmouth Bass',largemouth:'Largemouth Bass',perch:'Perch',crappie:'Crappie'};
+const esc=s=>s.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&');
+const title=s=>s.replace(/(^|[\s\/-])([a-z])/g,(m,a,b)=>a+b.toUpperCase());
+function parseNote(text,cfg){
+ const rows=[],warn=[];let date='',lake='',spot='',pend=false,last=null;
+ for(const raw of text.split(/\r?\n/)){
+  const ln=raw.trim();if(!ln)continue;
+  let m=ln.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if(m){const y=m[3].length===2?'20'+m[3]:m[3];date=y+'-'+m[1].padStart(2,'0')+'-'+m[2].padStart(2,'0');lake='';spot='';pend=false;last=null;continue}
+  m=ln.match(/^(\d+(?:\.\d+)?)\s*(?:"|”|″|in\b|inch(?:es)?\b)?\s*(.*)$/i);
+  if(!(m&&/\d{1,2}(?::\d{2})?\s*[ap]\.?m/i.test(ln))){
+   if(!date){warn.push('Skipped (no date yet): '+ln);continue}
+   const t=ln.replace(/^['"‘’“”]+|['"‘’“”]+$/g,'');
+   if(/^['"‘“]/.test(ln)){spot=t;pend=true;last=null}
+   else{lake=t;spot='';pend=false;last=null}
+   continue}
+  const length=parseFloat(m[1]);let rest=m[2];
+  const sp=rest.match(/^(\S+)\s*(.*)$/);rest=sp[2];
+  let species=SPECIES[sp[1].toLowerCase()];
+  if(!species){species=title(sp[1].toLowerCase());warn.push('Unknown species "'+sp[1]+'" on: '+ln)}
+  const tm=rest.match(/^(.*?)\s*(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m\.?\s*(.*)$/i);
+  if(!tm){warn.push('Could not read: '+ln);continue}
+  const wt=tm[1].trim();let weather='';
+  if(wt){const hit=WEATHER.find(w=>w[0]===wt.toLowerCase());weather=hit?hit[1]:wt.charAt(0).toUpperCase()+wt.slice(1).toLowerCase()}
+  const mn=tm[3]||'00',h=(+tm[2])%12+(tm[4].toLowerCase()==='p'?12:0),mins=h*60+(+mn);
+  const time=String(h).padStart(2,'0')+':'+mn;rest=tm[5];
+  const am=rest.match(/^(\S+)\s*(.*)$/);const code=am?am[1]:'';rest=am?am[2]:'';
+  const angler=cfg.anglers[code.toLowerCase()]||code;
+  let lure=rest,pattern='',assumed=false,unknown=true,notes='';
+  for(const L of cfg.lures){
+   const re=new RegExp('(^|\\s)'+esc(L.key)+'(?=\\s|$)','i'),mm=re.exec(rest);
+   if(!mm)continue;
+   unknown=false;lure=L.name;
+   const ks=mm.index+mm[1].length;let before=rest.slice(0,ks).trim(),after=rest.slice(ks+L.key.length).trim(),col=null;
+   for(const c of cfg.colors){
+    const rb=new RegExp('(^|\\s)'+esc(c.key)+'$','i'),ra=new RegExp('^'+esc(c.key)+'(?=\\s|$)','i');
+    if(rb.test(before)){col=c;before=before.replace(rb,'').trim();break}
+    if(ra.test(after)){col=c;after=after.replace(ra,'').trim();break}
+   }
+   if(col)pattern=col.name;else if(L.def){pattern=L.def;assumed=true}
+   notes=(before+' '+after).replace(/\s+/g,' ').trim();break}
+  let where='';
+  if(pend){where=spot;pend=false;last=mins}
+  else if(spot&&last!==null&&mins>=last&&mins-last<=15){where=spot;last=mins}
+  else last=null;
+  rows.push({date,time,length,species,lake,weather,angler,lure,pattern,patternAssumed:assumed,spot:where,notes,unknown});
+ }
+ return {rows,warn};
+}
+const key=c=>[c.date,c.time,c.length,(c.lake||'').toLowerCase()].join('|');
+function cfgFromUI(){
+ const anglers={},lures=[];
+ $('#ianglers').value.split(/\n/).forEach(l=>{const p=l.split('=');const k=(p[0]||'').trim();if(k)anglers[k.toLowerCase()]=(p[1]||'').trim()||k});
+ $('#ilures').value.split(/\n/).forEach(l=>{const p=l.split('=');const k=(p[0]||'').trim();if(!k||!p[1])return;const q=p[1].split('|');lures.push({key:k.toLowerCase(),name:q[0].trim(),def:(q[1]||'').trim()})});
+ lures.sort((a,b)=>b.key.length-a.key.length);
+ const colors=$('#icolors').value.split(',').map(s=>{const p=s.split('='),k=p[0].trim().toLowerCase();return k?{key:k,name:title(((p[1]||'').trim()||k).toLowerCase())}:null}).filter(Boolean).sort((a,b)=>b.key.length-a.key.length);
+ return {anglers,lures,colors};
+}
+let parsed=[];
+$('#iprev').onclick=async()=>{
+ const res=parseNote($('#itext').value,cfgFromUI()),rows=res.rows;
+ const have=new Set((await all()).map(key));
+ parsed=rows.filter(r=>!have.has(key(r)));
+ const out=$('#iout');out.replaceChildren();
+ out.append(el('p','sub',rows.length+' catches found, '+(rows.length-parsed.length)+' already in your log, '+parsed.length+' ready to import. A * after a color means it was assumed.'));
+ const std=new Set(WEATHER.map(w=>w[1])),odd=[...new Set(rows.map(r=>r.weather).filter(w=>w&&!std.has(w)))];
+ if(odd.length)out.append(el('p','sub','Weather saved as written: '+odd.join(', ')));
+ res.warn.forEach(w=>out.append(el('p','sub bad',w)));
+ const wrap=el('div','pvw'),t=el('table','pv'),hd=el('tr');
+ ['Date','Time','In','Species','Lake','Weather','Who','Lure','Where','Note'].forEach(h=>hd.append(el('th','',h)));t.append(hd);
+ for(const r of parsed){const tr=el('tr');
+  [r.date,r.time,r.length,r.species,r.lake,r.weather,r.angler,r.lure+(r.pattern?' ('+r.pattern+(r.patternAssumed?'*':'')+')':''),r.spot,r.notes]
+   .forEach((v,i)=>tr.append(el('td',i===7&&r.unknown?'bad':'',String(v==null?'':v))));t.append(tr)}
+ wrap.append(t);out.append(wrap);
+ if(parsed.length){const b=el('button','go','Import '+parsed.length+' catches');b.type='button';
+  b.onclick=async()=>{for(const r of parsed){const c=Object.assign({},r);delete c.unknown;await put(Object.assign({id:uid(),created:Date.now(),photo:null},c))}parsed=[];await load();show('log')};
+  out.append(b)}
+};
+const XS={metric:'count',view:'lure'};
+const AVG=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length*10)/10:0;
+const MAXV=a=>Math.max.apply(null,a);
+const lensOf=r=>r.map(c=>c.length);
+const nC=n=>n+(n===1?' catch':' catches');
+const dl=d=>d?GROUPS.day.label(d):'';
+const grp=(rows,f)=>{const m=new Map();for(const c of rows){const k=f(c)||'';if(!m.has(k))m.set(k,[]);m.get(k).push(c)}return [...m]};
+function sec(icon,title){const s=el('section','sec'),h=el('h2');h.append(ic(icon),el('span','',title));s.append(h);return s}
+function bars(s,items){
+ const mx=Math.max.apply(null,items.map(i=>i.v).concat([1]));
+ for(const i of items){const r=el('div','ibar'),l=el('div','il',i.label);if(i.sub)l.append(el('div','sm',i.sub));
+  const bt=el('div','bt'),bf=el('div','bf');bf.style.width=(i.v?Math.max(3,i.v/mx*100):0)+'%';bt.append(bf);
+  r.append(l,bt,el('div','iv',i.text));s.append(r)}
+}
+function mk(text,opts,val,fn){const l=el('label','',text),s=document.createElement('select');
+ for(const o of opts){const e=document.createElement('option');e.value=o[0];e.textContent=o[1];s.append(e)}
+ s.value=val;s.onchange=()=>fn(s.value);l.append(s);return l}
+function renderInsights(){
+ const xs=$('#xsp'),cur=xs.value,sps=[...new Set(ALL.map(c=>c.species).filter(Boolean))].sort();
+ xs.replaceChildren(...[''].concat(sps).map(v=>{const o=document.createElement('option');o.value=v;o.textContent=v||'All species';return o}));
+ xs.value=sps.indexOf(cur)>=0?cur:'';
+ const rows=ALL.filter(c=>(!xs.value||c.species===xs.value)&&c.length>0),out=$('#xout');out.replaceChildren();
+ if(!rows.length){out.append(el('p','empty','Nothing to analyze yet. Log or import some catches first.'));return}
+ const L=lensOf(rows),days=new Set(rows.map(c=>c.date)).size,lakes=new Set(rows.map(c=>c.lake).filter(Boolean)).size;
+ out.append(el('p','sub',nC(rows.length)+' on '+days+(days===1?' day':' days')+' across '+lakes+(lakes===1?' lake':' lakes')+' | avg '+AVG(L)+'″ | longest '+MAXV(L)+'″'));
+ out.append(el('p','sm','These numbers come only from catches, with no record of hours fished, so they show when and where fish were caught, not necessarily where fishing is best. Small samples can mislead.'));
+ let s=sec('lake','Personal bests by lake');
+ bars(s,grp(rows,c=>c.lake).map(([k,r])=>{const b=r.reduce((a,c)=>c.length>a.length?c:a);
+  return{label:k||'Not recorded',sub:[xs.value?'':b.species,dl(b.date),nC(r.length)].filter(Boolean).join(' | '),v:b.length,text:b.length+'″'}}).sort((a,b)=>b.v-a.v));
+ out.append(s);
+ s=sec('hook','Lures');
+ const row=el('div','row');
+ row.append(mk('Rank by',[['count','Most catches'],['avg','Average length'],['long','Longest fish']],XS.metric,v=>{XS.metric=v;renderInsights()}),
+  mk('Show',[['lure','Lure only'],['mix','Lure and color']],XS.view,v=>{XS.view=v;renderInsights()}));s.append(row);
+ const key=c=>XS.view==='mix'?(c.lure&&c.lure+(c.pattern?' ('+c.pattern+')':'')):c.lure;
+ const lg=grp(rows,key).filter(x=>x[0]),nolure=rows.length-lg.reduce((a,x)=>a+x[1].length,0);
+ const val=r=>XS.metric==='count'?r.length:XS.metric==='avg'?AVG(lensOf(r)):MAXV(lensOf(r));
+ const txt=r=>XS.metric==='count'?nC(r.length):XS.metric==='avg'?AVG(lensOf(r))+'″ avg':MAXV(lensOf(r))+'″';
+ bars(s,lg.map(([k,r])=>({label:k,sub:nC(r.length)+' | avg '+AVG(lensOf(r))+'″ | best '+MAXV(lensOf(r))+'″',v:val(r),text:txt(r)})).sort((a,b)=>b.v-a.v).slice(0,10));
+ if(nolure)s.append(el('p','sm',nC(nolure)+' with no lure recorded are left out.'));
+ out.append(s);
+ const tr=rows.filter(c=>c.time);
+ if(tr.length){s=sec('clock','Time of day');
+  const hs=tr.map(c=>+c.time.slice(0,2)),lo=Math.min.apply(null,hs),hi=Math.max.apply(null,hs),it=[];
+  for(let h=lo;h<=hi;h++){const r=tr.filter(c=>+c.time.slice(0,2)===h);
+   it.push({label:((h%12)||12)+(h<12?' AM':' PM'),v:r.length,text:r.length?r.length+' | avg '+AVG(lensOf(r))+'″':'0'})}
+  bars(s,it);if(tr.length<rows.length)s.append(el('p','sm',nC(rows.length-tr.length)+' with no time recorded are left out.'));out.append(s)}
+ const wr=grp(rows,c=>c.weather).filter(x=>x[0]);
+ if(wr.length){s=sec('cloudsun','Weather');
+  bars(s,wr.map(([k,r])=>({label:k,sub:'best '+MAXV(lensOf(r))+'″',v:r.length,text:r.length+' | avg '+AVG(lensOf(r))+'″'})).sort((a,b)=>b.v-a.v));out.append(s)}
+ const ar=grp(rows,c=>c.angler).filter(x=>x[0]);
+ if(ar.length){s=sec('person','Anglers');
+  bars(s,ar.map(([k,r])=>({label:k,sub:'avg '+AVG(lensOf(r))+'″ | best '+MAXV(lensOf(r))+'″',v:r.length,text:nC(r.length)})).sort((a,b)=>b.v-a.v));out.append(s)}
+}
+$('#xsp').onchange=renderInsights;
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+</script></body></html>
